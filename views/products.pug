@@ -1,0 +1,74 @@
+extends layout
+
+block content
+  h1.mb-4 Products
+  if products.length
+    table.table.table-striped
+      thead
+        tr
+          th Name
+          th Description
+          th Price
+          th Category
+          th In Stock
+          th Actions
+      tbody
+        each product in products
+          tr
+            td= product.name
+            td= product.description
+            td $#{product.price}
+            td= product.category
+            td= product.inStock ? 'Yes' : 'No'
+            td
+              .d-flex.gap-2.align-items-center
+                a.btn.btn-sm.btn-secondary.d-flex.align-items-center(href=`/products/edit/${product._id}` title='Edit')
+                  i.bi.bi-pencil.me-1
+                  | Edit
+                form.d-inline(method='post', action=`/products/delete/${product._id}`)
+                  button.btn.btn-sm.btn-danger.d-flex.align-items-center(type='submit' title='Delete' onclick='return confirm("Delete this product?")')
+                    i.bi.bi-trash.me-1
+                    | Delete
+  else
+    p.text-muted No products found.
+
+  hr
+  if editProduct
+    h2 Edit Product
+    form(method='post', action=`/products/edit/${editProduct._id}`)
+      .mb-3
+        label.form-label(for='name') Name
+        input.form-control(type='text', name='name', id='name', required, value=editProduct.name)
+      .mb-3
+        label.form-label(for='description') Description
+        textarea.form-control(name='description', id='description')= editProduct.description
+      .mb-3
+        label.form-label(for='price') Price
+        input.form-control(type='number', name='price', id='price', required, step='0.01', value=editProduct.price)
+      .mb-3
+        label.form-label(for='category') Category
+        input.form-control(type='text', name='category', id='category', value=editProduct.category)
+      .form-check.mb-3
+        input.form-check-input(type='checkbox', name='inStock', id='inStock', checked=editProduct.inStock)
+        label.form-check-label(for='inStock') In Stock
+      button.btn.btn-primary(type='submit') Update Product
+      a.btn.btn-link(href='/products') Cancel
+  else
+    h2 Add Product
+    form(method='post', action='/products/add')
+      .mb-3
+        label.form-label(for='name') Name
+        input.form-control(type='text', name='name', id='name', required)
+      .mb-3
+        label.form-label(for='description') Description
+        textarea.form-control(name='description', id='description')
+      .mb-3
+        label.form-label(for='price') Price
+        input.form-control(type='number', name='price', id='price', required, step='0.01')
+      .mb-3
+        label.form-label(for='category') Category
+        input.form-control(type='text', name='category', id='category')
+      .form-check.mb-3
+        input.form-check-input(type='checkbox', name='inStock', id='inStock', checked)
+        label.form-check-label(for='inStock') In Stock
+      button.btn.btn-success(type='submit') Add Product 

@@ -1,0 +1,74 @@
+extends layout
+
+block content
+  h1.mb-4 Services
+  if services.length
+    table.table.table-striped
+      thead
+        tr
+          th Title
+          th Details
+          th Duration (min)
+          th Price
+          th Active
+          th Actions
+      tbody
+        each service in services
+          tr
+            td= service.title
+            td= service.details
+            td= service.duration
+            td $#{service.price}
+            td= service.active ? 'Yes' : 'No'
+            td
+              .d-flex.gap-2.align-items-center
+                a.btn.btn-sm.btn-secondary.d-flex.align-items-center(href=`/services/edit/${service._id}` title='Edit')
+                  i.bi.bi-pencil.me-1
+                  | Edit
+                form.d-inline(method='post', action=`/services/delete/${service._id}`)
+                  button.btn.btn-sm.btn-danger.d-flex.align-items-center(type='submit' title='Delete' onclick='return confirm("Delete this service?")')
+                    i.bi.bi-trash.me-1
+                    | Delete
+  else
+    p.text-muted No services found.
+
+  hr
+  if editService
+    h2 Edit Service
+    form(method='post', action=`/services/edit/${editService._id}`)
+      .mb-3
+        label.form-label(for='title') Title
+        input.form-control(type='text', name='title', id='title', required, value=editService.title)
+      .mb-3
+        label.form-label(for='details') Details
+        textarea.form-control(name='details', id='details')= editService.details
+      .mb-3
+        label.form-label(for='duration') Duration (minutes)
+        input.form-control(type='number', name='duration', id='duration', value=editService.duration)
+      .mb-3
+        label.form-label(for='price') Price
+        input.form-control(type='number', name='price', id='price', required, step='0.01', value=editService.price)
+      .form-check.mb-3
+        input.form-check-input(type='checkbox', name='active', id='active', checked=editService.active)
+        label.form-check-label(for='active') Active
+      button.btn.btn-primary(type='submit') Update Service
+      a.btn.btn-link(href='/services') Cancel
+  else
+    h2 Add Service
+    form(method='post', action='/services/add')
+      .mb-3
+        label.form-label(for='title') Title
+        input.form-control(type='text', name='title', id='title', required)
+      .mb-3
+        label.form-label(for='details') Details
+        textarea.form-control(name='details', id='details')
+      .mb-3
+        label.form-label(for='duration') Duration (minutes)
+        input.form-control(type='number', name='duration', id='duration')
+      .mb-3
+        label.form-label(for='price') Price
+        input.form-control(type='number', name='price', id='price', required, step='0.01')
+      .form-check.mb-3
+        input.form-check-input(type='checkbox', name='active', id='active', checked)
+        label.form-check-label(for='active') Active
+      button.btn.btn-success(type='submit') Add Service 
